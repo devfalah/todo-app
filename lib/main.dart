@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       initialBinding: Bind(),
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Todo App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

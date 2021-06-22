@@ -46,8 +46,8 @@ class _LoginViewState extends State<LoginView>
 
   @override
   void dispose() {
-    animationController.dispose();
-    loginFormKey.currentState.dispose();
+    animationController?.dispose();
+    loginFormKey.currentState?.dispose();
 
     super.dispose();
   }
@@ -152,26 +152,28 @@ class _LoginViewState extends State<LoginView>
                       SizedBox(height: 40.0),
                       Container(
                         height: 50.0,
-                        child: Material(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
-                          shadowColor: Colors.greenAccent,
-                          color: Colors.green,
-                          elevation: 7.0,
-                          child: GestureDetector(
-                            child: Center(
-                              child: Text(
-                                "LOGIN",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          gradient: LinearGradient(
+                            colors: [Colors.green, Colors.greenAccent],
+                            begin: Alignment(0.0, -1.0),
+                            end: Alignment(0.0, 1.0),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          child: Center(
+                            child: Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            onTap: () {
-                              loginFormKey.currentState.save();
-                              auth.signInWithEmailAndPassword();
-                            },
                           ),
+                          onTap: () {
+                            loginFormKey.currentState.save();
+                            auth.signInWithEmailAndPassword();
+                          },
                         ),
                       ),
                       SizedBox(height: 20.0),

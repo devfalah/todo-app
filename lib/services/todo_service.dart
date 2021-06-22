@@ -36,7 +36,7 @@ class TodoService {
     return todos
         .doc(uId)
         .collection('mytodos')
-        .orderBy('date', descending: true)
+        .orderBy('date', descending: false)
         .snapshots()
         .map((event) {
       return event.docs.map((e) => TodoModel.fromMap(e)).toList();

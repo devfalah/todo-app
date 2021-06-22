@@ -32,8 +32,8 @@ class _RegisterViewState extends State<RegisterView>
 
   @override
   void dispose() {
-    animationController.dispose();
-    auth.regFormKey.currentState.dispose();
+    animationController?.dispose();
+    auth.regFormKey.currentState?.dispose();
     print('111');
     super.dispose();
   }
@@ -119,20 +119,22 @@ class _RegisterViewState extends State<RegisterView>
                         transform: Matrix4.translationValues(
                             muchDelayAnimation.value * widthDevice, 0, 0),
                         child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            gradient: LinearGradient(
+                              colors: [Colors.green, Colors.greenAccent],
+                              begin: Alignment(0.0, -1.0),
+                              end: Alignment(0.0, 1.0),
+                            ),
+                          ),
                           height: 50.0,
                           child: GestureDetector(
-                            child: Material(
-                              borderRadius: BorderRadius.circular(20.0),
-                              shadowColor: Colors.greenAccent,
-                              color: Colors.green,
-                              elevation: 7.0,
-                              child: Center(
-                                child: Text(
-                                  "SIGNUP",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            child: Center(
+                              child: Text(
+                                "SIGNUP",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),

@@ -4,34 +4,41 @@ import 'package:todo/controllers/auth_controller.dart';
 import 'package:todo/models/todo_model.dart';
 import 'package:todo/services/todo_service.dart';
 
-class TodoController extends GetxController with StateMixin {
+class TodoController extends GetxController {
   TodoService todoService = TodoService();
 
-  Rxn<TodoModel> todo = Rxn<TodoModel>();
-  TextEditingController controller = TextEditingController();
+  TextEditingController textController = TextEditingController();
   RxString uId = ''.obs;
+  RxBool isLoading = false.obs;
 
   final _todos = <TodoModel>[].obs;
   List<TodoModel> get todos => _todos.toList();
 
   @override
   onInit() {
+    isLoading.value = true;
     uId.value = Get.find<AuthController>().user.uid;
 
     _todos.bindStream(todoService.getTodosFromFirestor(uId.value));
-    change(todos, status: RxStatus.success());
+
     super.onInit();
+  }
+
+  @override
+  onReady() {
+    isLoading.value = false;
+    super.onReady();
   }
 
   createTodo() {
     todoService.addTodoToFirestor(
       id: uId.value,
       todoModel: TodoModel(
-        title: controller.text,
+        title: textController.text,
         isDone: false,
       ),
     );
-    controller.text = "";
+    textController.text = "";
     Get.back();
   }
 
@@ -42,10 +49,16 @@ class TodoController extends GetxController with StateMixin {
     );
   }
 
-  updateTodo() {
+  updateTodo(String id, String title, bool isDone) {
     todoService.updateTodoNameToFirestor(
       uId: uId.value,
-      todoModel: todo.value,
+      todoModel: TodoModel(
+        title: title,
+        id: id,
+        isDone: isDone,
+      ),
     );
+    textController.text = "";
+    Get.back();
   }
 }

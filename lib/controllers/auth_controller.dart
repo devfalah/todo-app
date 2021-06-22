@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:todo/main.dart';
 import 'package:todo/services/user_service.dart';
 import 'package:todo/views/home_view.dart';
+import 'package:todo/views/login_view.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -24,51 +24,33 @@ class AuthController extends GetxController {
   }
 
   Future<void> createUserWithEmailAndPassword() async {
-    try {
-      print(email.value);
-      print(password.value);
-      await _auth
-          .createUserWithEmailAndPassword(
-        email: email.value,
-        password: password.value,
-      )
-          .then((value) {
-        saveUser(value);
-      });
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
+    print(email.value);
+    print(password.value);
+    _auth
+        .createUserWithEmailAndPassword(
+      email: email.value,
+      password: password.value,
+    )
+        .then((value) {
+      saveUser(value);
+    });
   }
 
   Future<void> signInWithEmailAndPassword() async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: email.value,
-        password: password.value,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
+    _auth.signInWithEmailAndPassword(
+      email: email.value,
+      password: password.value,
+    );
   }
 
   void saveUser(UserCredential value) {
     UserService().addUserToFirestor(
-      name: value.user.displayName,
+      name: value.user.displayName ?? name.value,
       email: value.user.email,
       id: value.user.uid,
       photoUrl: value.user.photoURL,
     );
-    Get.off(HomeView());
+    Get.offAll(HomeView());
   }
 
   googleSignIn() async {
@@ -84,9 +66,12 @@ class AuthController extends GetxController {
   }
 
   signOut() async {
-    await _auth.signOut().then((value) {});
-    googleUser.disconnect();
-    googleUser.signOut();
-    Get.offAll(() => ControllerView());
+    await _auth.signOut();
+    if (googleUser != null) {
+      await googleUser.disconnect();
+      await googleUser.signOut();
+    }
+
+    Get.offAll(() => LoginView());
   }
 }

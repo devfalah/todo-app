@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo/controllers/auth_controller.dart';
 import 'package:todo/controllers/profile_controller.dart';
+import 'package:todo/helper/constant.dart';
 import 'widgets/text_form_field.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final ProfileController profile = Get.find();
+  final ProfileController profile = Get.find<ProfileController>();
   final AuthController auth = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    profile.onInit();
     return Scaffold(
       body: Stack(
         children: [
@@ -58,7 +60,8 @@ class ProfileScreen extends StatelessWidget {
                               ],
                               image: DecorationImage(
                                 image: NetworkImage(
-                                    profile.userModel.value.photoUrl),
+                                    profile.userModel.value.photoUrl ??
+                                        placeholderImage),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -66,10 +69,8 @@ class ProfileScreen extends StatelessWidget {
                           SizedBox(height: 15.0),
                           profile.editable.value
                               ? CustomTextFormField(
+                                  controller: profile.textEditingController,
                                   labeText: "Name",
-                                  onSave: (value) {
-                                    profile.newName.value = value;
-                                  },
                                 )
                               : Text(
                                   profile.userModel.value.name,
